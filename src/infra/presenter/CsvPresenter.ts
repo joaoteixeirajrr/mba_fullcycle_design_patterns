@@ -1,10 +1,9 @@
-import { Output } from "../../application/usecase/GenerateInvoices";
-import Presenter from "../../application/presenter/Presenter";
+import Presenter, { InvoiceDTO } from "../../application/presenter/Presenter";
 import moment from "moment";
 
 export default class CsvPresenter implements Presenter {
 
-	present(output: Output[]): any {
+	present(output: InvoiceDTO[]): any {
 		const lines: any[] = [];
 		for (const data of output) {
 			const line: string[] = [];
