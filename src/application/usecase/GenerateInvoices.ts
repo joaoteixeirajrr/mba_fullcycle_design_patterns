@@ -1,6 +1,6 @@
 import ContractRepository from "../repository/ContractRepository";
-import Presenter from "../presenter/Presenter";
-import DefaultJsonPresenter from "../presenter/DefaultJsonPresenter";
+import PresenterFactory from "../presenter/PresenterFactory";
+import DefaultPresenterFactory from "../presenter/DefaultPresenterFactory";
 import Mediator from "../mediator/Mediator";
 import NoopMediator from "../mediator/NoopMediator";
 import Usecase from "./Usecase";
@@ -9,12 +9,14 @@ export default class GenerateInvoices implements Usecase {
 
 	constructor (
 		readonly contractRepository: ContractRepository,
-		readonly presenter: Presenter = new DefaultJsonPresenter(),
+		readonly presenterFactory: PresenterFactory = new DefaultPresenterFactory(),
 		readonly mediator: Mediator = new NoopMediator()
 	) {
 	}
 
 	async execute (input: Input): Promise<any> {
+		// Resolve o presenter pelo formato antes de qualquer efeito (format invalido falha cedo).
+		const presenter = this.presenterFactory.create(input.format);
 		const output: Output[] = [];
 		const contracts = await this.contractRepository.list();
 		for (const contract of contracts) {
@@ -24,7 +26,7 @@ export default class GenerateInvoices implements Usecase {
 			}
 		}
 		await this.mediator.publish("InvoicesGenerated", output);
-		return this.presenter.present(output);
+		return presenter.present(output);
 	}
 }
 

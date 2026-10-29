@@ -1,6 +1,6 @@
 import ContractDatabaseRepository from "../src/infra/repository/ContractDatabaseRepository";
 import ContractRepository from "../src/application/repository/ContractRepository";
-import CsvPresenter from "../src/infra/presenter/CsvPresenter";
+import PresenterFactory from "../src/infra/presenter/PresenterFactory";
 import DatabaseConnection from "../src/infra/database/DatabaseConnection";
 import GenerateInvoices from "../src/application/usecase/GenerateInvoices";
 import PgPromiseAdapter from "../src/infra/database/PgPromiseAdapter";
@@ -65,8 +65,8 @@ test("Deve gerar as notas fiscais por regime de competência por csv", async fun
 		type: "accrual",
 		format: "csv"
 	};
-	const presenter = new CsvPresenter();
-	const generateInvoices = new GenerateInvoices(contractRepository, presenter);
+	const presenterFactory = new PresenterFactory();
+	const generateInvoices = new GenerateInvoices(contractRepository, presenterFactory);
 	const output = await generateInvoices.execute(input);
 	expect(output).toBe("2022-01-01;500");
 });
