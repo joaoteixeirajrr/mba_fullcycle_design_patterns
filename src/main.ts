@@ -3,6 +3,7 @@ import InvoiceDatabaseRepository from "./infra/repository/InvoiceDatabaseReposit
 import ExpressAdapter from "./infra/http/ExpressAdapter";
 import GenerateInvoices from "./application/usecase/GenerateInvoices";
 import CloseInvoicing from "./application/usecase/CloseInvoicing";
+import GetInvoices from "./application/usecase/GetInvoices";
 import PresenterFactory from "./infra/presenter/PresenterFactory";
 import LoggerDecorator from "./application/decorator/LoggerDecorator";
 import MainController from "./infra/http/MainController";
@@ -24,6 +25,7 @@ mediator.on("InvoicesClosed", async function (data: any) {
 });
 const generateInvoices = new LoggerDecorator(new GenerateInvoices(contractRepository, presenterFactory, mediator));
 const closeInvoicing = new LoggerDecorator(new CloseInvoicing(contractRepository, invoiceRepository, presenterFactory, mediator));
+const getInvoices = new GetInvoices(invoiceRepository, presenterFactory);
 const httpServer = new ExpressAdapter();
-new MainController(httpServer, generateInvoices, closeInvoicing);
+new MainController(httpServer, generateInvoices, closeInvoicing, getInvoices);
 httpServer.listen(3000);
